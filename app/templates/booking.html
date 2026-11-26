@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Booking | SKYWAYS</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('main.home') }}">Home</a>
+        <a href="{{ url_for('main.my_trips') }}">My Trips</a>
+    </nav>
+
+    <a href="{{ url_for('main.logout') }}" class="account-link">
+        Logout ↗
+    </a>
+</header>
+
+<main class="auth-page">
+    <div class="auth-card booking-card">
+
+        <p class="eyebrow">COMPLETE YOUR JOURNEY</p>
+        <h1>Passenger details.</h1>
+
+        <div class="booking-summary">
+            <strong>{{ flight.airline_name }}</strong>
+            <p>{{ flight.flight_code }}</p>
+
+            <h2>
+                {{ flight.departure_city }} →
+                {{ flight.arrival_city }}
+            </h2>
+
+            <p>{{ flight.journey_date }}</p>
+            <p>{{ flight.departure_time }} – {{ flight.arrival_time }}</p>
+            <p>{{ passengers }} passenger(s)</p>
+
+            <h2>
+                ₹{{ "%.0f"|format(flight.ticket_price * passengers) }}
+            </h2>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST"
+              action="{{ url_for('main.book_flight', journey_id=flight.journey_id) }}">
+
+            <input type="hidden"
+                   name="passengers"
+                   value="{{ passengers }}">
+
+            <label>PASSENGER NAME</label>
+            <input type="text"
+                   name="passenger_name"
+                   placeholder="Full name"
+                   required
+                   maxlength="100">
+
+            <label>PHONE NUMBER</label>
+            <input type="tel"
+                   name="passenger_phone"
+                   placeholder="10-digit mobile number"
+                   pattern="[0-9]{10}"
+                   maxlength="10"
+                   required>
+
+            <button type="submit" class="auth-button">
+                Confirm Booking ↗
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            This is a demonstration booking.
+            No real payment will be collected.
+        </p>
+
+        <p class="auth-switch">
+            <a href="{{ url_for('main.home') }}">← Return to Homepage</a>
+        </p>
+
+    </div>
+</main>
+
+<footer>
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+    <p>Explore beyond the ordinary.</p>
+    <p>© 2026 SKYWAYS</p>
+</footer>
+
+</body>
+</html>

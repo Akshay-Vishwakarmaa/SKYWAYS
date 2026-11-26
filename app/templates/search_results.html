@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Results | SKYWAYS</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('main.home') }}">Home</a>
+
+        {% if session.get('customer_id') %}
+            <a href="{{ url_for('main.my_trips') }}">My Trips</a>
+        {% endif %}
+    </nav>
+
+    {% if session.get('customer_id') %}
+        <a href="{{ url_for('main.logout') }}" class="account-link">
+            Logout ↗
+        </a>
+    {% else %}
+        <a href="{{ url_for('main.login') }}" class="account-link">
+            Login / Register ↗
+        </a>
+    {% endif %}
+
+</header>
+
+
+<main class="results-page">
+
+    <p class="eyebrow">YOUR NEXT ADVENTURE STARTS HERE</p>
+
+    <h1>Available flights.</h1>
+
+    <p class="results-summary">
+        {{ origin }} → {{ destination }}
+        &nbsp; | &nbsp;
+        {{ travel_date }}
+        &nbsp; | &nbsp;
+        {{ passengers }} passenger(s)
+    </p>
+
+    {% if flights %}
+
+        <div class="flight-list">
+
+            {% for flight in flights %}
+
+                <article class="flight-card">
+
+                    <div class="airline-details">
+                        <p class="airline-name">
+                            {{ flight.airline_name }}
+                        </p>
+                        <p class="flight-code">
+                            {{ flight.flight_code }}
+                        </p>
+                    </div>
+
+                    <div class="journey-details">
+
+                        <div class="journey-point">
+                            <h2>{{ flight.departure_time }}</h2>
+                            <p>{{ flight.departure_city }}</p>
+                        </div>
+
+                        <div class="journey-line">
+                            <span></span>
+                            <p>DIRECT</p>
+                            <span></span>
+                        </div>
+
+                        <div class="journey-point">
+                            <h2>{{ flight.arrival_time }}</h2>
+                            <p>{{ flight.arrival_city }}</p>
+                        </div>
+
+                    </div>
+
+                    <div class="flight-price">
+
+                        <h2>
+                            ₹{{ "%.0f"|format(flight.ticket_price) }}
+                        </h2>
+
+                        <p>Per passenger</p>
+
+                        <p class="total-price">
+                            Total: ₹{{ "%.0f"|format(
+                                flight.ticket_price * passengers
+                            ) }}
+                        </p>
+
+                        {% if session.get('customer_id') %}
+
+                            <form
+                                method="GET"
+                                action="{{ url_for(
+                                    'main.book_flight',
+                                    journey_id=flight.journey_id
+                                ) }}"
+                            >
+
+                                <input type="hidden"
+                                       name="passengers"
+                                       value="{{ passengers }}">
+
+                                <button type="submit" class="book-button">
+                                    Book Flight ↗
+                                </button>
+
+                            </form>
+
+                        {% else %}
+
+                            <a href="{{ url_for('main.login') }}"
+                               class="book-button">
+                                Login to Book ↗
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-flights">
+
+            <h2>No flights found.</h2>
+
+            <p>
+                We couldn't find flights matching your search.
+                Try another date or destination.
+            </p>
+
+            <a href="{{ url_for('main.home') }}"
+               class="explore-button">
+                Return to Homepage ↗
+            </a>
+
+        </div>
+
+    {% endif %}
+
+    <p style="margin-top: 30px;">
+        <a href="{{ url_for('main.home') }}" class="book-button">
+            ← Back to Homepage
+        </a>
+    </p>
+
+</main>
+
+
+<footer>
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+    <p>Explore beyond the ordinary.</p>
+    <p>© 2026 SKYWAYS</p>
+</footer>
+
+</body>
+</html>

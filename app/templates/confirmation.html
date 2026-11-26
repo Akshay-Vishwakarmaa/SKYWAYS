@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed | SKYWAYS</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('main.home') }}">Home</a>
+        <a href="{{ url_for('main.my_trips') }}">My Trips</a>
+    </nav>
+
+    <a href="{{ url_for('main.logout') }}" class="account-link">
+        Logout ↗
+    </a>
+</header>
+
+<main class="auth-page">
+    <div class="auth-card confirmation-card">
+
+        <div class="confirmation-symbol">✓</div>
+
+        <p class="eyebrow">BOOKING SUCCESSFUL</p>
+        <h1>Your journey awaits.</h1>
+
+        <p class="auth-subtitle">
+            Your demonstration booking has been confirmed.
+        </p>
+
+        <div class="booking-summary">
+
+            <p class="summary-label">BOOKING REFERENCE</p>
+            <h2 class="booking-code">
+                {{ booking.booking_code }}
+            </h2>
+
+            <div class="summary-divider"></div>
+
+            <p><strong>{{ booking.airline_name }}</strong></p>
+            <p>{{ booking.flight_code }}</p>
+
+            <h2>
+                {{ booking.departure_city }} →
+                {{ booking.arrival_city }}
+            </h2>
+
+            <p>{{ booking.journey_date }}</p>
+
+            <p>
+                {{ booking.departure_time }} –
+                {{ booking.arrival_time }}
+            </p>
+
+            <div class="summary-divider"></div>
+
+            <p>Passenger: {{ booking.passenger_name }}</p>
+            <p>Phone: {{ booking.passenger_phone }}</p>
+            <p>Passengers: {{ booking.passenger_count }}</p>
+
+            <h2>₹{{ "%.0f"|format(booking.amount) }}</h2>
+
+            <span class="confirmed-label">
+                {{ booking.status }}
+            </span>
+
+        </div>
+
+        <a href="{{ url_for('main.my_trips') }}"
+           class="auth-button confirmation-button">
+            View My Trips ↗
+        </a>
+
+        <a href="{{ url_for('main.home') }}"
+           class="book-button">
+            Return to Homepage ↗
+        </a>
+
+    </div>
+</main>
+
+<footer>
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+    <p>Explore beyond the ordinary.</p>
+    <p>© 2026 SKYWAYS</p>
+</footer>
+
+</body>
+</html>

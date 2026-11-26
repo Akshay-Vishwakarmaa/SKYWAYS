@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Trips | SKYWAYS</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('main.home') }}">Home</a>
+    </nav>
+
+    <a href="{{ url_for('main.logout') }}" class="account-link">
+        Logout ↗
+    </a>
+
+</header>
+
+
+<main class="results-page">
+
+    <p class="eyebrow">YOUR JOURNEY HISTORY</p>
+
+    <h1>My Trips.</h1>
+
+    <p class="results-summary">
+        All your SKYWAYS reservations in one place.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if bookings %}
+
+        <div class="flight-list">
+
+            {% for booking in bookings %}
+
+                <article class="trip-card">
+
+                    <div>
+                        <p class="eyebrow">BOOKING REFERENCE</p>
+                        <h3>{{ booking.booking_code }}</h3>
+
+                        <p>
+                            {{ booking.airline_name }}
+                            · {{ booking.flight_code }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h2>
+                            {{ booking.departure_city }}
+                            → {{ booking.arrival_city }}
+                        </h2>
+
+                        <p>{{ booking.journey_date }}</p>
+
+                        <p>
+                            {{ booking.departure_time }}
+                            – {{ booking.arrival_time }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <p>{{ booking.passenger_name }}</p>
+
+                        <p>
+                            {{ booking.passenger_count }}
+                            passenger(s)
+                        </p>
+
+                        <h3>
+                            ₹{{ "%.0f"|format(booking.amount) }}
+                        </h3>
+
+                        <span class="confirmed-label">
+                            {{ booking.status }}
+                        </span>
+                    </div>
+
+                    <div class="trip-actions">
+
+                        <a
+                            href="{{ url_for(
+                                'main.booking_confirmation',
+                                booking_code=booking.booking_code
+                            ) }}"
+                            class="book-button"
+                        >
+                            View Booking ↗
+                        </a>
+
+                        {% if booking.status == "CONFIRMED" %}
+
+                            <a
+                                href="{{ url_for(
+                                    'main.reschedule_flight',
+                                    booking_code=booking.booking_code
+                                ) }}"
+                                class="book-button"
+                            >
+                                Reschedule Flight ↗
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-flights">
+
+            <h2>No trips yet.</h2>
+
+            <p>
+                Your booked journeys will appear here.
+            </p>
+
+            <a href="{{ url_for('main.home') }}"
+               class="explore-button">
+                Find Flights ↗
+            </a>
+
+        </div>
+
+    {% endif %}
+
+    <p style="margin-top: 30px;">
+        <a href="{{ url_for('main.home') }}" class="book-button">
+            ← Return to Homepage
+        </a>
+    </p>
+
+</main>
+
+
+<footer>
+    <a href="{{ url_for('main.home') }}" class="brand">
+        SKYWAYS<span>.</span>
+    </a>
+    <p>Explore beyond the ordinary.</p>
+    <p>© 2026 SKYWAYS</p>
+</footer>
+
+</body>
+</html>
